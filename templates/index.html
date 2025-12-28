@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PhishGuard - URL Safety Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>PhishGuard - URL Safety Check</h1>
+
+    <form method="POST">
+        <input type="text" name="url" placeholder="Enter website URL" required>
+        <input type="submit" value="Check Website">
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if result %}
+        <div class="result {{ result.verdict | lower | replace(' ', '-') }}">
+            <h2>{{ result.verdict }}</h2>
+            <p><strong>URL:</strong> {{ result.url }}</p>
+
+            {% if result.engines %}
+                <p><strong>VirusTotal Engines Flagged:</strong></p>
+                <ul>
+                    {% for engine in result.engines %}
+                        <li>{{ engine }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if result.reasons %}
+                <p><strong>Other Reasons:</strong></p>
+                <ul>
+                    {% for reason in result.reasons %}
+                        <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No major risks detected.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</body>
+</html>
